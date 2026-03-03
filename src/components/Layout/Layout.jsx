@@ -4,7 +4,6 @@ import React from "react";
 export default function Layout() {
   return (
     <div className="flex h-screen">
-      {/* Sidebar */}
       <aside className="w-64 bg-gray-200 p-6 flex flex-col">
         <h1 className="text-xl font-bold mb-6">Finance Tracker</h1>
 
@@ -17,7 +16,6 @@ export default function Layout() {
         </nav>
       </aside>
 
-      {/* Main content */}
       <main className="flex-1 bg-slate-600 p-10">
         <Outlet />
       </main>
