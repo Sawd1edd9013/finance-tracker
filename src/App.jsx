@@ -1,0 +1,20 @@
+import { Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout/Layout";
+import React from "react";
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/login" element={<div>Login</div>} />
+      <Route path="/register" element={<div>Register</div>} />
+
+      <Route path="/" element={<Layout />}>
+        <Route index element={<div>Dashboard</div>} />
+        <Route path="transactions" element={<div>Transactions</div>} />
+        <Route path="accounts" element={<div>Accounts</div>} />
+        <Route path="categories" element={<div>Categories</div>} />
+        <Route path="settings" element={<div>Settings</div>} />
+      </Route>
+    </Routes>
+  );
+}
