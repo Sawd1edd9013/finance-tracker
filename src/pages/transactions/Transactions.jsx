@@ -15,7 +15,7 @@ export const Transactions = () => {
         История операций
       </h1>
 
-      <div className="border-b border-gray-900 mb-6"></div>
+      <div className="border-b border-gray-500 mb-6"></div>
 
       <div className="bg-white rounded-lg p-6 shadow-md">
         <div className="flex justify-between mb-6">

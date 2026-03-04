@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { UserIcon, OutIcon } from "../icon";
 import React from "react";
 
@@ -9,11 +9,60 @@ export default function Layout() {
         <h1 className="text-2xl font-bold">Finance Tracker</h1>
 
         <nav className="flex flex-col gap-6 text-xl mt-24">
-          <Link to="/">Dashboard</Link>
-          <Link to="/transactions">История операций</Link>
-          <Link to="/accounts">Счета</Link>
-          <Link to="/categories">Категории</Link>
-          <Link to="/settings">Настройки</Link>
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-gray-300 px-3 py-1 rounded-md font-medium"
+                : "px-3 py-1"
+            }
+          >
+            Dashboard
+          </NavLink>
+
+          <NavLink
+            to="/transactions"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-gray-300 px-3 py-1 rounded-md font-medium"
+                : "px-3 py-1"
+            }
+          >
+            История операций
+          </NavLink>
+
+          <NavLink
+            to="/accounts"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-gray-300 px-3 py-1 rounded-md font-medium"
+                : "px-3 py-1"
+            }
+          >
+            Счета
+          </NavLink>
+
+          <NavLink
+            to="/categories"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-gray-300 px-3 py-1 rounded-md font-medium"
+                : "px-3 py-1"
+            }
+          >
+            Категории
+          </NavLink>
+
+          <NavLink
+            to="/settings"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-gray-300 px-3 py-1 rounded-md font-medium"
+                : "px-3 py-1"
+            }
+          >
+            Настройки
+          </NavLink>
         </nav>
 
         <div className="flex flex-col gap-3 text-lg mt-auto mb-10">
@@ -30,7 +79,9 @@ export default function Layout() {
       </aside>
 
       <main className="flex-1 bg-gray-300 p-10">
-        <Outlet />
+        <div className="max-w-7xl mx-auto w-full">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
