@@ -8,7 +8,7 @@ export const Login = () => {
         Finance Tracker
       </h1>
 
-      <div className="w-full max-w-lg bg-white border border-slate-200 rounded-lg p-10 shadow-sm">
+      <div className="w-full max-w-lg bg-white border border-slate-200 rounded-lg p-10 shadow-lg">
         <h2 className="text-3xl font-semibold text-center text-slate-800 mb-8">
           Вход
         </h2>
@@ -32,12 +32,12 @@ export const Login = () => {
           </div>
           <button
             type="submit"
-            className="text-lg w-full h-12 bg-slate-800 text-white rounded-md hover:bg-slate-700 transition text-base font-semibold"
+            className="text-xl w-full h-12 bg-slate-800 text-white rounded-md hover:bg-slate-700 transition text-base font-semibold"
           >
             Войти
           </button>
         </form>
-        <p className="text-lg text-center text-slate-600 mt-6">
+        <p className="text-xl text-center text-slate-600 mt-6">
           Нет аккаунта?{" "}
           <Link
             to="/register"
