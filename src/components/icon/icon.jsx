@@ -1,23 +1,11 @@
-import styled from "styled-components";
-import PropTypes from "prop-types";
 import React from "react";
-const IconContainer = ({ className, id, inactive, ...props }) => (
-  <div className={className} {...props}>
-    <i className={`fa ${id}`} aria-hidden="true"></i>
-  </div>
-);
 
-export const Icon = styled(IconContainer)`
-  font-size: ${({ size = "24px" }) => size};
-  margin: ${({ margin = "0" }) => margin};
-  color: ${({ disabled }) => (disabled ? "#ccc" : "#000")};
-
-  &:hover {
-    cursor: ${({ inactive }) => (inactive ? "default" : "pointer")};
-  }
-`;
-
-Icon.propTypes = {
-  id: PropTypes.string.isRequired,
-  inactive: PropTypes.bool,
+export const Icon = ({ children, className = "" }) => {
+  return (
+    <span
+      className={`inline-flex items-center justify-center w-5 h-5 text-slate-900 -mt-0.5${className}`}
+    >
+      {children}
+    </span>
+  );
 };
