@@ -2,32 +2,26 @@ import { PencilIcon, TrashIcon } from "../../components/icon";
 import { Table } from "../../components/table";
 import React from "react";
 
-export const Accounts = () => {
+export const Categories = () => {
   const columns = [
     { key: "name", title: "Название", align: "left" },
-    { key: "type", title: "Тип счета", align: "left" },
-    { key: "balance", title: "Баланс", align: "right" },
+    { key: "type", title: "Тип", align: "left" },
     { key: "actions", title: "Действия", align: "center" },
   ];
 
   const data = [
-    {
-      id: 1,
-      name: "Основная карта",
-      type: "Дебетовая карта",
-      balance: "124 500 ₽",
-    },
-    { id: 2, name: "Накопительный вклад", type: "Вклад", balance: "350 000 ₽" },
-    { id: 3, name: "Наличные", type: "Наличные", balance: "8 200 ₽" },
+    { id: 1, name: "Продукты", type: "Расход" },
+    { id: 2, name: "Зарплата", type: "Доход" },
+    { id: 3, name: "Транспорт", type: "Расход" },
   ];
   return (
     <div className="px-8 pt-4 pb-8">
-      <h1 className="text-4xl font-semibold">Счета</h1>
+      <h1 className="text-4xl font-semibold">Категории</h1>{" "}
       <div className="h-px bg-gray-500 mb-6 mt-4"></div>
       <div className="bg-white rounded-lg p-6 shadow-md">
         <div className="flex justify-end mb-6">
           <button className="h-9 px-4 border border-slate-300 rounded-md text-base hover:bg-slate-100">
-            + Добавить счет
+            + Добавить категорию
           </button>
         </div>
 

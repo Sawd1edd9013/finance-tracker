@@ -7,8 +7,30 @@ import {
   TrashIcon,
   PencilIcon,
 } from "../../components/icon";
+import { Table } from "../../components/table";
 import React from "react";
 export const Transactions = () => {
+  const columns = [
+    { key: "date", title: "Дата", align: "center" },
+    { key: "account", title: "Счёт", align: "center" },
+    { key: "category", title: "Категория", align: "center" },
+    { key: "type", title: "Тип", align: "center" },
+    { key: "amount", title: "Сумма", align: "center" },
+    { key: "comment", title: "Комментарий", align: "center" },
+    { key: "actions", title: "Действия", align: "center" },
+  ];
+
+  const data = [
+    {
+      id: 1,
+      date: "12.06.2026",
+      account: "Дебетовая карта",
+      category: "Продукты",
+      type: "Расход",
+      amount: "4 500 ₽",
+      comment: "Пятёрочка",
+    },
+  ];
   return (
     <div className="px-8 pt-4 pb-8">
       <h1 className="text-4xl font-semibold text-black-900 mb-6">
@@ -87,45 +109,25 @@ export const Transactions = () => {
           </button>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-base border-collapse">
-            <thead className="text-center">
-              <tr className="border-b border-slate-300 text-slate-900">
-                <th className="py-3 pr-4 font-semibold">Дата</th>
-                <th className="py-3 px-4 font-semibold">Счёт</th>
-                <th className="py-3 px-4 font-semibold">Категория</th>
-                <th className="py-3 px-4 font-semibold">Тип</th>
-                <th className="py-3 px-4 font-semibold ">Сумма</th>
-                <th className="py-3 px-4 font-semibold">Комментарий</th>
-                <th className="py-3 px-4 font-semibold text-center">
-                  Действия
-                </th>
-              </tr>
-            </thead>
+        <Table
+          columns={columns}
+          data={data}
+          rowKey={(row) => row.id}
+          renderCell={(col, row) => {
+            if (col.key !== "actions") return row[col.key];
 
-            <tbody>
-              <tr className="border-b border-slate-300 hover:bg-slate-50 text-center">
-                <td className="py-3 pr-4 ">12.06.2026</td>
-                <td className="py-3 px-4">Дебетовая карта</td>
-                <td className="py-3 px-4">Продукты</td>
-                <td className="py-3 px-4">Расход</td>
-                <td className="py-3 px-4">4 500 ₽</td>
-                <td className="py-3 px-4">Пятёрочка</td>
-
-                <td className="py-3 px-4 text-center">
-                  <div className="flex justify-center gap-2">
-                    <button className="text-slate-500 hover:text-slate-800">
-                      <PencilIcon />
-                    </button>
-                    <button className="text-slate-500 hover:text-red-600">
-                      <TrashIcon />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+            return (
+              <div className="flex justify-center gap-3">
+                <button className="text-slate-900 hover:text-slate-800">
+                  <PencilIcon />
+                </button>
+                <button className="text-slate-900 hover:text-red-600">
+                  <TrashIcon />
+                </button>
+              </div>
+            );
+          }}
+        />
       </div>
     </div>
   );
