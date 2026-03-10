@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { FormCard, FormGroup, Input } from "../../components";
 import React from "react";
 
 export const Register = () => {
@@ -8,43 +9,25 @@ export const Register = () => {
         Finance Tracker
       </h1>
 
-      <div className="w-full max-w-lg bg-white rounded-lg p-10 shadow-lg">
-        <h2 className="text-3xl font-semibold text-center text-slate-800 mb-8">
-          Регистрация
-        </h2>
+      <FormCard title="Регистрация" className="w-full max-w-md">
+        <h2 className="text-3xl font-semibold text-center text-slate-800 mb-8"></h2>
 
         <form className="space-y-6">
-          <div className="flex flex-col space-y-1">
-            <label className="text-xl text-slate-700">Имя пользователя</label>
-            <input
-              type="text"
-              className="h-12 px-4 text-lg rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-400 transition"
-            />
-          </div>
+          <FormGroup label="Имя пользователя">
+            <Input type="text" className="h-12 text-lg" />
+          </FormGroup>
 
-          <div className="flex flex-col space-y-1">
-            <label className="text-xl text-slate-700">Email</label>
-            <input
-              type="email"
-              className="h-12 px-4 text-lg rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-400 transition"
-            />
-          </div>
+          <FormGroup label="Email">
+            <Input type="email" className="h-12 text-lg" />
+          </FormGroup>
 
-          <div className="flex flex-col space-y-1">
-            <label className="text-xl text-slate-700">Пароль</label>
-            <input
-              type="password"
-              className="h-12 px-4 text-lg rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-400 transition"
-            />
-          </div>
+          <FormGroup label="Пароль">
+            <Input type="password" className="h-12 text-lg" />
+          </FormGroup>
 
-          <div className="flex flex-col space-y-1">
-            <label className="text-xl text-slate-700">Повтор пароля</label>
-            <input
-              type="password"
-              className="h-12 px-4 text-lg rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-400 transition"
-            />
-          </div>
+          <FormGroup label="Повтор пароля">
+            <Input type="password" className="h-12 text-lg" />
+          </FormGroup>
 
           <button
             type="submit"
@@ -63,7 +46,7 @@ export const Register = () => {
             Войти
           </Link>
         </p>
-      </div>
+      </FormCard>
     </div>
   );
 };

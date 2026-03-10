@@ -4,7 +4,7 @@ import React from "react";
 
 export default function Layout() {
   return (
-    <div className="flex h-screen">
+    <div className="flex min-h-screen">
       <aside className="w-64 bg-gray-200 px-8 py-8 flex flex-col">
         <h1 className="text-2xl font-bold">Finance Tracker</h1>
 

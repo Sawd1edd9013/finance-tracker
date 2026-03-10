@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { FormCard, FormGroup, Input } from "../../components";
 import React from "react";
 
 export const Login = () => {
@@ -8,28 +9,24 @@ export const Login = () => {
         Finance Tracker
       </h1>
 
-      <div className="w-full max-w-lg bg-white border border-slate-200 rounded-lg p-10 shadow-lg">
-        <h2 className="text-3xl font-semibold text-center text-slate-800 mb-8">
-          Вход
-        </h2>
+      <FormCard title="Вход" className="w-full max-w-md">
+        <h2 className="text-3xl font-semibold text-center text-slate-800 mb-8"></h2>
 
         <form className="space-y-6">
-          <div className="flex flex-col space-y-1">
-            <label className="text-xl text-slate-600">Email</label>
-            <input
+          <FormGroup label="Email">
+            <Input
               type="email"
               placeholder="example@mail.com"
-              className="h-12 px-3 text-xl rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-400 transition"
+              className="h-12 text-xl"
             />
-          </div>
-          <div className="flex flex-col space-y-1">
-            <label className="text-xl text-slate-600">Пароль</label>
-            <input
+          </FormGroup>
+          <FormGroup label="Пароль">
+            <Input
               type="password"
               placeholder="••••••••"
-              className="h-12 px-3 text-xl rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-400 transition"
+              className="h-12 text-xl"
             />
-          </div>
+          </FormGroup>
           <button
             type="submit"
             className="text-xl w-full h-12 bg-slate-800 text-white rounded-md hover:bg-slate-700 transition text-base font-semibold"
@@ -46,7 +43,7 @@ export const Login = () => {
             Зарегистрироваться
           </Link>
         </p>
-      </div>
+      </FormCard>
     </div>
   );
 };

@@ -1,11 +1,10 @@
-import { FormCard, FormGroup, Input } from "../../components/form";
+import { PageHeader, FormCard, FormGroup, Input } from "../../components";
 import React from "react";
 
 export const Settings = () => {
   return (
     <div className="px-8 pt-4 pb-8">
-      <h1 className="text-4xl font-semibold">Настройки</h1>
-      <div className="h-px bg-gray-500 mb-6 mt-4"></div>
+      <PageHeader title="Настройки" />
 
       <FormCard title="Данные пользователя">
         <form className="flex flex-col gap-6">
