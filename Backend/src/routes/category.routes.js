@@ -2,10 +2,10 @@ const express = require("express");
 const { createCategory, getCategories } = require("../controllers/category");
 const authenticated = require("../middlewares/authenticated");
 const mapCategory = require("../utils/mapCategory");
-
+const validateCategory = require("../middlewares/validateCategory");
 const router = express.Router();
 
-router.post("/", authenticated, async (req, res) => {
+router.post("/", authenticated, validateCategory, async (req, res) => {
   try {
     const newCategory = await createCategory({
       name: req.body.name,

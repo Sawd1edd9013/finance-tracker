@@ -2,10 +2,11 @@ const express = require("express");
 const { createAccount, getAccounts } = require("../controllers/account");
 const authenticated = require("../middlewares/authenticated");
 const mapAccount = require("../utils/mapAccount");
+const validateAccount = require("../middlewares/validateAccount");
 
 const router = express.Router();
 
-router.post("/", authenticated, async (req, res) => {
+router.post("/", authenticated, validateAccount, async (req, res) => {
   try {
     const newAccount = await createAccount({
       name: req.body.name,

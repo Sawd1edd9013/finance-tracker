@@ -10,10 +10,6 @@ async function createTransaction({
   comment,
   userId,
 }) {
-  if (!amount) {
-    throw new Error("Amount is required");
-  }
-
   const transaction = await Transaction.create({
     amount,
     type,

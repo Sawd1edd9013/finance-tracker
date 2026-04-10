@@ -7,12 +7,13 @@ const {
   getTimeAnalytics,
 } = require("../controllers/transaction");
 const authenticated = require("../middlewares/authenticated");
+const validateTransaction = require("../middlewares/validateTransaction");
 const mapTransaction = require("../utils/mapTransaction");
 
 const router = express.Router();
 
 // create transaction
-router.post("/", authenticated, async (req, res) => {
+router.post("/", authenticated, validateTransaction, async (req, res) => {
   try {
     const transaction = await createTransaction({
       amount: req.body.amount,
