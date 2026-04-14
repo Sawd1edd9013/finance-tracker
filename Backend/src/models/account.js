@@ -11,6 +11,10 @@ const accountSchema = mongoose.Schema(
       ref: "User",
       required: true,
     },
+    balance: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true },
 );

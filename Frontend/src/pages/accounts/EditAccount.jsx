@@ -1,25 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { getAccounts, updateAccount } from "../../api/accounts";
 import { useNavigate, useParams } from "react-router-dom";
 import { AccountForm } from "../../components";
 
 export const EditAccount = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [account, setAccount] = useState(null);
 
-  const initialValues = {
-    name: "Основная карта",
-    type: "debit",
-    balance: "124500",
-  };
+  useEffect(() => {
+    const fetch = async () => {
+      const data = await getAccounts();
+      const found = data.data.find((acc) => acc.id === id);
+      setAccount(found);
+    };
+
+    fetch();
+  }, [id]);
+
+  if (!account) return null;
 
   return (
     <AccountForm
       mode="edit"
-      initialValues={initialValues}
+      initialValues={account}
       onCancel={() => navigate("/accounts")}
-      onSubmit={(values) => {
-        console.log("edit account", id, values);
-        navigate("/accounts");
+      onSubmit={async (values) => {
+        try {
+          await updateAccount(id, {
+            name: values.name,
+            type: values.type,
+            balance: Number(values.balance),
+          });
+
+          navigate("/accounts");
+        } catch (e) {
+          console.error(e);
+        }
       }}
     />
   );

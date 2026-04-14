@@ -1,5 +1,9 @@
 const express = require("express");
-const { createAccount, getAccounts } = require("../controllers/account");
+const {
+  createAccount,
+  getAccounts,
+  deleteAccount,
+} = require("../controllers/account");
 const authenticated = require("../middlewares/authenticated");
 const mapAccount = require("../mappers/mapAccount");
 const validateAccount = require("../middlewares/validateAccount");
@@ -16,6 +20,7 @@ router.post(
       name: req.body.name,
       type: req.body.type,
       userId: req.user.id,
+      balance: Number(req.body.balance),
     });
 
     res.send({ data: mapAccount(newAccount) });
@@ -29,6 +34,31 @@ router.get(
     const accounts = await getAccounts(req.user.id);
 
     res.send({ data: accounts.map(mapAccount) });
+  }),
+);
+
+router.delete(
+  "/:id",
+  authenticated,
+  asyncHandler(async (req, res) => {
+    await deleteAccount(req.params.id, req.user.id);
+
+    res.send({ error: null });
+  }),
+);
+
+router.patch(
+  "/:id",
+  authenticated,
+  validateAccount,
+  asyncHandler(async (req, res) => {
+    const updated = await updateAccount(req.params.id, req.user.id, {
+      name: req.body.name,
+      type: req.body.type,
+      balance: Number(req.body.balance),
+    });
+
+    res.send({ data: mapAccount(updated) });
   }),
 );
 

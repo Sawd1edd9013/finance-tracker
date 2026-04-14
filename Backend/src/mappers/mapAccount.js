@@ -3,5 +3,6 @@ module.exports = function (account) {
     id: account._id,
     name: account.name,
     type: account.type,
+    balance: account.balance,
   };
 };

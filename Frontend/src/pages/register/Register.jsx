@@ -1,8 +1,40 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FormCard, FormGroup, Input } from "../../components";
-import React from "react";
+import React, { useState } from "react";
+import { registerUser } from "../../api/auth";
 
 export const Register = () => {
+  const navigate = useNavigate();
+
+  const [values, setValues] = useState({
+    login: "",
+    password: "",
+    repeatPassword: "",
+  });
+  const [error, setError] = useState("");
+
+  const setField = (key, value) => {
+    setValues((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    if (values.password !== values.repeatPassword) {
+      setError("Пароли не совпадают");
+      return;
+    }
+    try {
+      await registerUser({ login: values.login, password: values.password });
+      navigate("/");
+    } catch (e) {
+      setError(e.message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col items-center justify-center px-4">
       <h1 className="text-5xl font-semibold text-slate-800 mb-16">
@@ -10,24 +42,38 @@ export const Register = () => {
       </h1>
 
       <FormCard title="Регистрация" className="w-full max-w-md">
-        <h2 className="text-3xl font-semibold text-center text-slate-800 mb-8"></h2>
-
-        <form className="space-y-6">
-          <FormGroup label="Имя пользователя">
-            <Input type="text" className="h-12 text-lg" />
-          </FormGroup>
-
+        <form onSubmit={handleSubmit} className="space-y-6">
           <FormGroup label="Логин">
-            <Input type="text" className="h-12 text-lg" />
+            <Input
+              type="text"
+              placeholder="Введите логин"
+              value={values.login}
+              onChange={(e) => setField("login", e.target.value)}
+              className="h-12 text-lg"
+            />
           </FormGroup>
 
           <FormGroup label="Пароль">
-            <Input type="password" className="h-12 text-lg" />
+            <Input
+              type="password"
+              placeholder="Введите пароль"
+              value={values.password}
+              onChange={(e) => setField("password", e.target.value)}
+              className="h-12 text-lg"
+            />
           </FormGroup>
 
           <FormGroup label="Повтор пароля">
-            <Input type="password" className="h-12 text-lg" />
+            <Input
+              type="password"
+              placeholder="Повторите пароль"
+              value={values.repeatPassword}
+              onChange={(e) => setField("repeatPassword", e.target.value)}
+              className="h-12 text-lg"
+            />
           </FormGroup>
+
+          {error ? <div className="text-sm text-red-600">{error}</div> : null}
 
           <button
             type="submit"

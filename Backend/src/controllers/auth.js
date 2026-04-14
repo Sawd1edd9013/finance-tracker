@@ -9,7 +9,9 @@ async function register(login, password) {
     throw new Error("Пользователь уже существует");
   }
 
-  const user = await User.create({ login, password });
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await User.create({ login, password: hashedPassword });
 
   const token = generate({ id: user._id });
 

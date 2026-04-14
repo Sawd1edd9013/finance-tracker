@@ -1,10 +1,14 @@
 import { PencilIcon, TrashIcon } from "../../components/icon";
 import { PageHeader, Table } from "../../components";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { getAccounts, deleteAccount } from "../../api/accounts";
+import { ACCOUNT_TYPE_LABELS } from "../../constans/accountTypeLabels";
 import React from "react";
 
 export const Accounts = () => {
   const navigate = useNavigate();
+  const [accounts, setAccounts] = useState([]);
   const columns = [
     { key: "name", title: "Название", align: "left" },
     { key: "type", title: "Тип счета", align: "left" },
@@ -12,16 +16,31 @@ export const Accounts = () => {
     { key: "actions", title: "Действия", align: "center" },
   ];
 
-  const data = [
-    {
-      id: 1,
-      name: "Основная карта",
-      type: "Дебетовая карта",
-      balance: "124 500 ₽",
-    },
-    { id: 2, name: "Накопительный вклад", type: "Вклад", balance: "350 000 ₽" },
-    { id: 3, name: "Наличные", type: "Наличные", balance: "8 200 ₽" },
-  ];
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      try {
+        const data = await getAccounts();
+        setAccounts(data.data);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchAccounts();
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteAccount(id);
+
+      // обновляем список
+      const data = await getAccounts();
+      setAccounts(data.data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <div className="px-8 pt-4 pb-8">
       <PageHeader title="Счета" />
@@ -37,9 +56,13 @@ export const Accounts = () => {
 
         <Table
           columns={columns}
-          data={data}
+          data={accounts}
           rowKey={(row) => row.id}
           renderCell={(col, row) => {
+            if (col.key === "type") {
+              return ACCOUNT_TYPE_LABELS[row.type] || row.type;
+            }
+
             if (col.key !== "actions") return row[col.key];
 
             return (
@@ -50,7 +73,10 @@ export const Accounts = () => {
                 >
                   <PencilIcon />
                 </button>
-                <button className="text-slate-900 hover:text-red-600">
+                <button
+                  onClick={() => handleDelete(row.id)}
+                  className="text-slate-900 hover:text-red-600"
+                >
                   <TrashIcon />
                 </button>
               </div>
