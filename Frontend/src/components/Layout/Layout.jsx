@@ -1,8 +1,33 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { UserIcon, OutIcon } from "../icon";
-import React from "react";
+import { getUserName, logoutUser } from "../../api/auth";
+import React, { useState, useEffect } from "react";
 
 export default function Layout() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await getUserName();
+        setUser(res.data);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      window.location.href = "/login";
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <div className="flex min-h-screen">
       <aside className="w-64 bg-gray-200 px-8 py-8 flex flex-col">
@@ -68,10 +93,13 @@ export default function Layout() {
         <div className="flex flex-col gap-3 text-lg mt-auto mb-10">
           <div className="flex items-center gap-2">
             <UserIcon />
-            <span>Дарья</span>
+            <span>{user?.login || "..."}</span>
           </div>
 
-          <button className="flex items-center gap-2 text-left">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-left"
+          >
             <OutIcon />
             <span>Выйти</span>
           </button>

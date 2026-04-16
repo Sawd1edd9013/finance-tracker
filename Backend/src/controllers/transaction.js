@@ -116,6 +116,7 @@ async function updateTransaction(id, userId, data) {
   oldTransaction.accountId = data.accountId;
   oldTransaction.categoryId = data.categoryId;
   oldTransaction.comment = data.comment;
+  oldTransaction.date = data.date;
 
   await oldTransaction.save();
 

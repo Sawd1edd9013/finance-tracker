@@ -7,44 +7,123 @@ import {
   PeriodSelector,
 } from "./components";
 import { useNavigate } from "react-router-dom";
-import React from "react";
+import { getTransactions } from "../../api/transactions";
+import { getAccounts } from "../../api/accounts";
+import { getCategories } from "../../api/categories";
+import {
+  getAnalytics,
+  getTimeAnalytics,
+  getCategoryAnalytics,
+} from "../../api/analytics";
+import { LineChartComponent } from "./components/charts/LineChart";
+import { PieChartComponent } from "./components/charts/PieChart";
+import React, { useState, useEffect } from "react";
 
 export const Dashboard = () => {
+  const [transactions, setTransactions] = useState([]);
+  const [accountsMap, setAccountsMap] = useState({});
+  const [categoriesMap, setCategoriesMap] = useState({});
+  const [analytics, setAnalytics] = useState(null);
+  const [accounts, setAccounts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [period, setPeriod] = useState({
+    from: null,
+    to: null,
+  });
+  const [timeData, setTimeData] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
   const navigate = useNavigate();
 
+  const setThisMonth = () => {
+    const now = new Date();
+    const from = new Date(now.getFullYear(), now.getMonth(), 1);
+    const to = new Date();
+
+    setPeriod({ from, to });
+  };
+
+  const setLastMonth = () => {
+    const now = new Date();
+    const from = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const to = new Date(now.getFullYear(), now.getMonth(), 0);
+
+    setPeriod({ from, to });
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const params = {};
+
+        if (period.from) {
+          params.from = period.from.toISOString();
+          params.to = period.to.toISOString();
+        }
+
+        const [
+          transactionsRes,
+          accRes,
+          catRes,
+          analyticsRes,
+          timeRes,
+          categoryRes,
+        ] = await Promise.all([
+          getTransactions(params),
+          getAccounts(),
+          getCategories(),
+          getAnalytics(params),
+          getTimeAnalytics(params),
+          getCategoryAnalytics(params),
+        ]);
+
+        setTransactions(transactionsRes.data.slice(0, 5));
+        setAnalytics(analyticsRes.data);
+
+        const accMap = {};
+        accRes.data.forEach((a) => (accMap[a.id] = a.name));
+        setAccountsMap(accMap);
+        setAccounts(accRes.data);
+
+        const catMap = {};
+        catRes.data.forEach((c) => (catMap[c.id] = c.name));
+
+        setCategoriesMap(catMap);
+        setCategories(catRes.data);
+        setTimeData(timeRes.data);
+
+        const formattedCategoryData = categoryRes.data.map((item) => ({
+          name: catMap[item.categoryId] || "Без категории",
+          value: item.total,
+        }));
+
+        setCategoryData(formattedCategoryData);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchData();
+  }, [period]);
   return (
     <div className="px-8 pt-4 pb-8">
       <div className="mb-4">
-        <PeriodSelector />
+        <PeriodSelector onThisMonth={setThisMonth} onLastMonth={setLastMonth} />
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-4">
-        <StatCard title="Баланс" value="124 500 ₽" hint="+4.2% за месяц" />
-        <StatCard
-          title="Доходы"
-          value="85 000 ₽"
-          hint="+12% к прошлому месяцу"
-        />
-        <StatCard
-          title="Расходы"
-          value="60 000 ₽"
-          hint="-5% к прошлому месяцу"
-        />
+        <StatCard title="Баланс" value={`${analytics?.balance || 0} ₽`} />
+        <StatCard title="Доходы" value={`${analytics?.totalIncome || 0} ₽`} />
+        <StatCard title="Расходы" value={`${analytics?.totalExpense || 0} ₽`} />
         <StatCard
           title="Чистый результат"
-          value="25 000 ₽"
-          hint="+8% к прошлому месяцу"
+          value={`${analytics?.balance || 0} ₽`}
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <Panel title="Счета">
           <MiniList
-            items={[
-              "Основная карта — 124 500 ₽",
-              "Накопительный вклад — 350 000 ₽",
-              "Наличные — 8 200 ₽",
-            ]}
+            items={accounts.map((a) => `${a.name} — ${a.balance} ₽`)}
             footerText="Перейти ко всем →"
             onFooterClick={() => navigate("/accounts")}
           />
@@ -52,11 +131,9 @@ export const Dashboard = () => {
 
         <Panel title="Категории">
           <MiniList
-            items={[
-              "Продукты — Расход",
-              "Зарплата — Доход",
-              "Транспорт — Расход",
-            ]}
+            items={categories.map(
+              (c) => `${c.name} — ${c.type === "income" ? "Доход" : "Расход"}`,
+            )}
             footerText="Перейти ко всем →"
             onFooterClick={() => navigate("/categories")}
           />
@@ -65,16 +142,32 @@ export const Dashboard = () => {
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <Panel title="Динамика по дням">
-          <ChartStub title="График (линия)" />
+          {timeData.length === 0 ? (
+            <div className="text-slate-400 text-base">
+              Нет данных за выбранный период
+            </div>
+          ) : (
+            <LineChartComponent data={timeData} />
+          )}
         </Panel>
 
         <Panel title="Структура расходов">
-          <ChartStub title="График (круг)" />
+          {categoryData.length === 0 ? (
+            <div className="text-slate-400 text-base">
+              Нет расходов за выбранный период
+            </div>
+          ) : (
+            <PieChartComponent data={categoryData} />
+          )}
         </Panel>
       </div>
 
-      <Panel>
-        <RecentTable />
+      <Panel title="Последние операции">
+        <RecentTable
+          data={transactions}
+          accountsMap={accountsMap}
+          categoriesMap={categoriesMap}
+        />
       </Panel>
     </div>
   );

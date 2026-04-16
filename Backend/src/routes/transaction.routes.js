@@ -80,11 +80,11 @@ router.get(
   "/analytics/time",
   authenticated,
   asyncHandler(async (req, res) => {
-    const data = await getTimeAnalytics(req.user.id);
-
+    const data = await getTimeAnalytics(req.user.id, req.query);
     res.send({ data });
   }),
 );
+
 // delete
 router.delete(
   "/:id",
@@ -108,6 +108,7 @@ router.patch(
       accountId: req.body.accountId,
       categoryId: req.body.categoryId,
       comment: req.body.comment,
+      date: req.body.date,
     });
 
     res.send({ data: mapTransaction(updated) });

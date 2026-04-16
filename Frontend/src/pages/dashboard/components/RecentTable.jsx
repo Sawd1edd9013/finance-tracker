@@ -1,31 +1,21 @@
 import React from "react";
 import { Table } from "../../../components";
 import { useNavigate } from "react-router-dom";
+import { CATEGORY_TYPE_LABELS } from "../../../constans/categoryTypeLabels";
 
-export const RecentTable = () => {
+export const RecentTable = ({
+  data = [],
+  accountsMap = {},
+  categoriesMap = {},
+}) => {
   const navigate = useNavigate();
+
   const columns = [
     { key: "date", title: "Дата", align: "left" },
+    { key: "account", title: "Счёт", align: "left" },
     { key: "category", title: "Категория", align: "left" },
     { key: "type", title: "Тип", align: "left" },
     { key: "amount", title: "Сумма", align: "right" },
-  ];
-
-  const data = [
-    {
-      id: 1,
-      date: "12.06.2026",
-      category: "Продукты",
-      type: "Расход",
-      amount: "4 500 ₽",
-    },
-    {
-      id: 2,
-      date: "12.06.2026",
-      category: "Транспорт",
-      type: "Расход",
-      amount: "350 ₽",
-    },
   ];
 
   return (
@@ -33,8 +23,29 @@ export const RecentTable = () => {
       <Table
         columns={columns}
         data={data}
-        rowKey={(r) => r.id}
-        renderCell={(col, row) => row[col.key]}
+        rowKey={(row) => row.id}
+        renderCell={(col, row) => {
+          if (col.key === "date") {
+            return new Date(row.date || row.createdAt).toLocaleDateString();
+          }
+          if (col.key === "account") {
+            return accountsMap[row.accountId] || "—";
+          }
+
+          if (col.key === "category") {
+            return categoriesMap[row.categoryId] || "—";
+          }
+
+          if (col.key === "type") {
+            return CATEGORY_TYPE_LABELS[row.type] || row.type;
+          }
+
+          if (col.key === "amount") {
+            return `${row.amount} ₽`;
+          }
+
+          return row[col.key];
+        }}
       />
 
       <div className="mt-3 text-right">

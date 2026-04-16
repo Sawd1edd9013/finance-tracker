@@ -13,10 +13,19 @@ module.exports = function buildTransactionFilter({
   if (accountId) filter.accountId = accountId;
 
   if (from || to) {
-    filter.createdAt = {};
+    filter.date = {};
 
-    if (from) filter.createdAt.$gte = new Date(from);
-    if (to) filter.createdAt.$lte = new Date(to);
+    if (from) {
+      const fromDate = new Date(from);
+      fromDate.setHours(0, 0, 0, 0);
+      filter.date.$gte = fromDate;
+    }
+
+    if (to) {
+      const toDate = new Date(to);
+      toDate.setHours(23, 59, 59, 999);
+      filter.date.$lte = toDate;
+    }
   }
 
   return filter;

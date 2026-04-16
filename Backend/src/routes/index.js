@@ -7,7 +7,7 @@ const transactionRoutes = require("./transaction.routes");
 
 const router = express.Router();
 
-router.use(authRoutes);
+router.use("/auth", authRoutes);
 router.use("/accounts", accountRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/transactions", transactionRoutes);

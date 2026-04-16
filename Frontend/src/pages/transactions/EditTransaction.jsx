@@ -26,8 +26,8 @@ export const EditTransaction = () => {
         setTransaction({
           ...found,
           amount: String(found.amount ?? ""),
-          date: found.createdAt
-            ? new Date(found.createdAt).toISOString().slice(0, 10)
+          date: found.date
+            ? new Date(found.date).toISOString().slice(0, 10)
             : "",
         });
       } catch (e) {
@@ -65,6 +65,7 @@ export const EditTransaction = () => {
         accountId: values.accountId,
         categoryId: values.categoryId,
         comment: values.comment || "",
+        date: values.date,
       });
 
       navigate("/transactions");

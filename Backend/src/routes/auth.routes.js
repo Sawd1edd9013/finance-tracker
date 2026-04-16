@@ -1,7 +1,8 @@
 const express = require("express");
-const { register, login } = require("../controllers/auth");
+const { register, login, getUserName } = require("../controllers/auth");
 const mapUser = require("../mappers/mapUser");
 const asyncHandler = require("../utils/asyncHandler");
+const authenticated = require("../middlewares/authenticated");
 
 const router = express.Router();
 
@@ -27,8 +28,24 @@ router.post(
   }),
 );
 
+router.get(
+  "/username",
+  authenticated,
+  asyncHandler(async (req, res) => {
+    const user = await getUserName(req.user.id);
+
+    res.send({
+      data: {
+        id: user.id,
+        login: user.login,
+      },
+    });
+  }),
+);
+
 router.post("/logout", (req, res) => {
-  res.cookie("token", "", { httpOnly: true }).send({});
+  res.clearCookie("token");
+  res.send({ error: null });
 });
 
 module.exports = router;

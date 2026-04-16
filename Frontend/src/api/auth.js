@@ -25,3 +25,7 @@ export function logoutUser() {
     method: "POST",
   });
 }
+
+export function getUserName() {
+  return request("/auth/username");
+}

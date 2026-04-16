@@ -11,9 +11,6 @@ export const CreateTransaction = () => {
     try {
       setError("");
 
-      console.log("SUBMIT VALUES:", values);
-      console.log("DATE VALUE:", values.date);
-
       if (
         !values.amount ||
         !values.type ||

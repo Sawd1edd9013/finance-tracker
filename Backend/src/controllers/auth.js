@@ -36,7 +36,18 @@ async function login(login, password) {
   return { token, user };
 }
 
+async function getUserName(userId) {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return user;
+}
+
 module.exports = {
   register,
   login,
+  getUserName,
 };
