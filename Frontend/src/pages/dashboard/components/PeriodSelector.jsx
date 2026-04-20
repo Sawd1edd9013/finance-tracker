@@ -8,6 +8,35 @@ export const PeriodSelector = ({
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
 
+  const [selectedPeriod, setSelectedPeriod] = useState("");
+
+  const buttonClassName = (periodType) =>
+    `h-8 px-3 text-base rounded-md border transition-colors ${
+      selectedPeriod === periodType
+        ? "border-blue-600 bg-blue-50 text-blue-700"
+        : "border-slate-300 bg-white hover:bg-slate-50"
+    }`;
+
+  const handleThisMonth = () => {
+    setSelectedPeriod("current");
+    onThisMonth();
+  };
+
+  const handleLastMonth = () => {
+    setSelectedPeriod("previous");
+    onLastMonth();
+  };
+
+  const handleFromChange = (e) => {
+    setSelectedPeriod("custom");
+    setFrom(e.target.value);
+  };
+
+  const handleToChange = (e) => {
+    setSelectedPeriod("custom");
+    setTo(e.target.value);
+  };
+
   const handleApply = () => {
     if (!from || !to) return;
 
@@ -16,6 +45,7 @@ export const PeriodSelector = ({
 
     if (fromDate > toDate) return;
 
+    setSelectedPeriod("custom");
     onCustomPeriod(fromDate, toDate);
   };
 
@@ -23,24 +53,18 @@ export const PeriodSelector = ({
     <div className="flex flex-wrap items-center justify-start gap-2 text-lg">
       <span className="text-slate-700 font-medium">Период:</span>
 
-      <button
-        onClick={onThisMonth}
-        className="h-8 px-3 text-base rounded-md border border-slate-300 bg-white hover:bg-slate-50"
-      >
+      <button onClick={handleThisMonth} className={buttonClassName("current")}>
         этот месяц
       </button>
 
-      <button
-        onClick={onLastMonth}
-        className="h-8 px-3 text-base rounded-md border border-slate-300 bg-white hover:bg-slate-50"
-      >
+      <button onClick={handleLastMonth} className={buttonClassName("previous")}>
         прошлый месяц
       </button>
 
       <input
         type="date"
         value={from}
-        onChange={(e) => setFrom(e.target.value)}
+        onChange={handleFromChange}
         className="h-8 px-2 text-sm rounded-md border border-slate-300 bg-white"
       />
 
@@ -49,7 +73,7 @@ export const PeriodSelector = ({
       <input
         type="date"
         value={to}
-        onChange={(e) => setTo(e.target.value)}
+        onChange={handleToChange}
         className="h-8 px-2 text-sm rounded-md border border-slate-300 bg-white"
       />
 

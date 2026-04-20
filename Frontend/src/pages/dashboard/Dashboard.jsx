@@ -121,6 +121,13 @@ export const Dashboard = () => {
     setExpandedChart(null);
   };
 
+  const totalBalance = accounts.reduce(
+    (sum, account) => sum + Number(account.balance || 0),
+    0,
+  );
+  const netResult =
+    Number(analytics?.totalIncome || 0) - Number(analytics?.totalExpense || 0);
+
   return (
     <>
       <div className="px-8 pt-4 pb-8">
@@ -133,16 +140,13 @@ export const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-4 gap-4 mb-4">
-          <StatCard title="Баланс" value={`${analytics?.balance || 0} ₽`} />
+          <StatCard title="Баланс" value={`${totalBalance} ₽`} />
           <StatCard title="Доходы" value={`${analytics?.totalIncome || 0} ₽`} />
           <StatCard
             title="Расходы"
             value={`${analytics?.totalExpense || 0} ₽`}
           />
-          <StatCard
-            title="Чистый результат"
-            value={`${analytics?.balance || 0} ₽`}
-          />
+          <StatCard title="Чистый результат" value={`${netResult} ₽`} />
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-4">
