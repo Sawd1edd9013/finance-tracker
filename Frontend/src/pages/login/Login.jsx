@@ -1,57 +1,12 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FormCard, FormGroup, Input } from "../../components";
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  selectAuthError,
-  selectAuthIsLoading,
-  selectCurrentUser,
-  selectIsAuthChecked,
-} from "../../store/auth/selectors";
-import { clearAuthError } from "../../store/auth/actions";
-import { loginThunk } from "../../store/auth/thunks";
+import { useAuthForm } from "../auth/hooks/useAuthForm";
+import React from "react";
 
 export const Login = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const user = useSelector(selectCurrentUser);
-  const isLoading = useSelector(selectAuthIsLoading);
-  const authError = useSelector(selectAuthError);
-  const isAuthChecked = useSelector(selectIsAuthChecked);
-
-  const [values, setValues] = useState({
-    login: "",
-    password: "",
+  const { values, setField, handleSubmit, isLoading, authError } = useAuthForm({
+    mode: "login",
   });
-
-  useEffect(() => {
-    dispatch(clearAuthError());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (isAuthChecked && user) {
-      navigate("/");
-    }
-  }, [isAuthChecked, navigate, user]);
-
-  const setField = (key, value) => {
-    setValues((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      await dispatch(loginThunk(values));
-      navigate("/");
-    } catch {
-      // Ошибка уже сохраняется в Redux
-    }
-  };
 
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col items-center justify-center px-4">

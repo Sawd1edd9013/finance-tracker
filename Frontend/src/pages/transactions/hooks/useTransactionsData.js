@@ -1,0 +1,126 @@
+import { useEffect, useState } from "react";
+import { getTransactions, deleteTransaction } from "../../../api/transactions";
+import { getAccounts } from "../../../api/accounts";
+import { getCategories } from "../../../api/categories";
+
+const INITIAL_FILTERS = {
+  from: "",
+  to: "",
+  accountId: "",
+  categoryId: "",
+  type: "",
+};
+
+export const useTransactionsData = () => {
+  const [transactions, setTransactions] = useState([]);
+  const [accounts, setAccounts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [accountsMap, setAccountsMap] = useState({});
+  const [categoriesMap, setCategoriesMap] = useState({});
+  const [error, setError] = useState("");
+  const [filters, setFilters] = useState(INITIAL_FILTERS);
+
+  useEffect(() => {
+    const fetchReferenceData = async () => {
+      try {
+        setError("");
+
+        const accountsResponse = await getAccounts();
+        const categoriesResponse = await getCategories();
+
+        setAccounts(accountsResponse.data);
+        setCategories(categoriesResponse.data);
+
+        const nextAccountsMap = {};
+        accountsResponse.data.forEach((account) => {
+          nextAccountsMap[account.id] = account.name;
+        });
+
+        const nextCategoriesMap = {};
+        categoriesResponse.data.forEach((category) => {
+          nextCategoriesMap[category.id] = category.name;
+        });
+
+        setAccountsMap(nextAccountsMap);
+        setCategoriesMap(nextCategoriesMap);
+      } catch (e) {
+        setError(e.message || "Ошибка загрузки данных");
+      }
+    };
+
+    fetchReferenceData();
+  }, []);
+
+  useEffect(() => {
+    const fetchTransactionsData = async () => {
+      try {
+        setError("");
+
+        const data = await getTransactions(filters);
+        setTransactions(data.data);
+      } catch (e) {
+        setError(e.message || "Ошибка загрузки операций");
+      }
+    };
+
+    fetchTransactionsData();
+  }, [filters]);
+
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => {
+      const next = {
+        ...prev,
+        [key]: value,
+      };
+
+      if (key === "type" && prev.categoryId) {
+        const selectedCategory = categories.find(
+          (c) => c.id === prev.categoryId,
+        );
+
+        if (selectedCategory && selectedCategory.type !== value) {
+          next.categoryId = "";
+        }
+      }
+
+      return next;
+    });
+  };
+
+  const handleResetFilters = () => {
+    setFilters(INITIAL_FILTERS);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      setError("");
+
+      await deleteTransaction(id);
+
+      const data = await getTransactions(filters);
+      setTransactions(data.data);
+
+      const accountsResponse = await getAccounts();
+      const nextAccountsMap = {};
+      accountsResponse.data.forEach((account) => {
+        nextAccountsMap[account.id] = account.name;
+      });
+      setAccountsMap(nextAccountsMap);
+    } catch (e) {
+      setError(e.message || "Ошибка удаления операции");
+    }
+  };
+
+  return {
+    transactions,
+    accounts,
+    categories,
+    accountsMap,
+    categoriesMap,
+    error,
+    filters,
+    handleFilterChange,
+    handleResetFilters,
+    handleDelete,
+  };
+};

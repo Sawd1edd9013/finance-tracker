@@ -1,45 +1,19 @@
 import { PencilIcon, TrashIcon } from "../../components/icon";
 import { PageHeader, Table } from "../../components";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { getAccounts, deleteAccount } from "../../api/accounts";
 import { ACCOUNT_TYPE_LABELS } from "../../constans/accountTypeLabels";
+import { useAccountsData } from "../hooks/useEntityListData";
 import React from "react";
 
 export const Accounts = () => {
   const navigate = useNavigate();
-  const [accounts, setAccounts] = useState([]);
+  const { accounts, handleDelete } = useAccountsData();
   const columns = [
     { key: "name", title: "Название", align: "left" },
     { key: "type", title: "Тип счета", align: "left" },
     { key: "balance", title: "Баланс", align: "right" },
     { key: "actions", title: "Действия", align: "center" },
   ];
-
-  useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        const data = await getAccounts();
-        setAccounts(data.data);
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-    fetchAccounts();
-  }, []);
-
-  const handleDelete = async (id) => {
-    try {
-      await deleteAccount(id);
-
-      // обновляем список
-      const data = await getAccounts();
-      setAccounts(data.data);
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   return (
     <div className="px-8 pt-4 pb-8">

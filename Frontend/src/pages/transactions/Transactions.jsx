@@ -1,30 +1,25 @@
 import { PencilIcon, TrashIcon } from "../../components/icon";
 import { PageHeader, FilterPanel, Table } from "../../components";
 import { useNavigate } from "react-router-dom";
-import React, { useState, useEffect } from "react";
-
-import { getTransactions, deleteTransaction } from "../../api/transactions";
-import { getAccounts } from "../../api/accounts";
-import { getCategories } from "../../api/categories";
 import { CATEGORY_TYPE_LABELS } from "../../constans/categoryTypeLabels";
+import { useTransactionsData } from "./hooks/useTransactionsData";
+import React from "react";
 
 export const Transactions = () => {
   const navigate = useNavigate();
 
-  const [transactions, setTransactions] = useState([]);
-  const [accounts, setAccounts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [accountsMap, setAccountsMap] = useState({});
-  const [categoriesMap, setCategoriesMap] = useState({});
-  const [error, setError] = useState("");
-
-  const [filters, setFilters] = useState({
-    from: "",
-    to: "",
-    accountId: "",
-    categoryId: "",
-    type: "",
-  });
+  const {
+    transactions,
+    accounts,
+    categories,
+    accountsMap,
+    categoriesMap,
+    error,
+    filters,
+    handleFilterChange,
+    handleResetFilters,
+    handleDelete,
+  } = useTransactionsData();
 
   const columns = [
     { key: "date", title: "Дата", align: "center" },
@@ -35,103 +30,6 @@ export const Transactions = () => {
     { key: "comment", title: "Комментарий", align: "center" },
     { key: "actions", title: "Действия", align: "center" },
   ];
-
-  useEffect(() => {
-    const fetchReferenceData = async () => {
-      try {
-        setError("");
-
-        const accountsResponse = await getAccounts();
-        const categoriesResponse = await getCategories();
-
-        setAccounts(accountsResponse.data);
-        setCategories(categoriesResponse.data);
-
-        const nextAccountsMap = {};
-        accountsResponse.data.forEach((account) => {
-          nextAccountsMap[account.id] = account.name;
-        });
-
-        const nextCategoriesMap = {};
-        categoriesResponse.data.forEach((category) => {
-          nextCategoriesMap[category.id] = category.name;
-        });
-
-        setAccountsMap(nextAccountsMap);
-        setCategoriesMap(nextCategoriesMap);
-      } catch (e) {
-        setError(e.message || "Ошибка загрузки данных");
-      }
-    };
-
-    fetchReferenceData();
-  }, []);
-
-  useEffect(() => {
-    const fetchTransactionsData = async () => {
-      try {
-        setError("");
-
-        const data = await getTransactions(filters);
-        setTransactions(data.data);
-      } catch (e) {
-        setError(e.message || "Ошибка загрузки операций");
-      }
-    };
-
-    fetchTransactionsData();
-  }, [filters]);
-
-  const handleFilterChange = (key, value) => {
-    setFilters((prev) => {
-      const next = {
-        ...prev,
-        [key]: value,
-      };
-
-      if (key === "type" && prev.categoryId) {
-        const selectedCategory = categories.find(
-          (c) => c.id === prev.categoryId,
-        );
-
-        if (selectedCategory && selectedCategory.type !== value) {
-          next.categoryId = "";
-        }
-      }
-
-      return next;
-    });
-  };
-
-  const handleResetFilters = () => {
-    setFilters({
-      from: "",
-      to: "",
-      accountId: "",
-      categoryId: "",
-      type: "",
-    });
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      setError("");
-
-      await deleteTransaction(id);
-
-      const data = await getTransactions(filters);
-      setTransactions(data.data);
-
-      const accountsResponse = await getAccounts();
-      const nextAccountsMap = {};
-      accountsResponse.data.forEach((account) => {
-        nextAccountsMap[account.id] = account.name;
-      });
-      setAccountsMap(nextAccountsMap);
-    } catch (e) {
-      setError(e.message || "Ошибка удаления операции");
-    }
-  };
 
   return (
     <div className="px-8 pt-4 pb-8">

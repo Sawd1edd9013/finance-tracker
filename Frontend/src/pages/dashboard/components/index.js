@@ -1,4 +1,3 @@
-export * from "./ChartStub.jsx";
 export * from "./MiniList.jsx";
 export * from "./Panel.jsx";
 export * from "./PeriodSelector.jsx";

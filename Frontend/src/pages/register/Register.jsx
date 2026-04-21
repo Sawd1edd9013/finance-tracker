@@ -1,69 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FormCard, FormGroup, Input } from "../../components";
-import React, { useState, useEffect } from "react";
-import {
-  selectAuthError,
-  selectAuthIsLoading,
-  selectCurrentUser,
-  selectIsAuthChecked,
-} from "../../store/auth/selectors";
-import { useDispatch, useSelector } from "react-redux";
-import { clearAuthError } from "../../store/auth/actions";
-import { registerThunk } from "../../store/auth/thunks";
+import React from "react";
+import { useAuthForm } from "../auth/hooks/useAuthForm";
 
 export const Register = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const user = useSelector(selectCurrentUser);
-  const isLoading = useSelector(selectAuthIsLoading);
-  const authError = useSelector(selectAuthError);
-  const isAuthChecked = useSelector(selectIsAuthChecked);
-
-  const [values, setValues] = useState({
-    login: "",
-    password: "",
-    repeatPassword: "",
-  });
-
-  const [localError, setLocalError] = useState("");
-
-  useEffect(() => {
-    dispatch(clearAuthError());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (isAuthChecked && user) {
-      navigate("/");
-    }
-  }, [isAuthChecked, navigate, user]);
-
-  const setField = (key, value) => {
-    setValues((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLocalError("");
-    if (values.password !== values.repeatPassword) {
-      setLocalError("Пароли не совпадают");
-      return;
-    }
-    try {
-      await dispatch(
-        registerThunk({
-          login: values.login,
-          password: values.password,
-        }),
-      );
-      navigate("/");
-    } catch {
-      // Ошибка уже сохраняется в Redux
-    }
-  };
+  const { values, setField, handleSubmit, isLoading, authError, localError } =
+    useAuthForm({
+      mode: "register",
+    });
 
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col items-center justify-center px-4">
