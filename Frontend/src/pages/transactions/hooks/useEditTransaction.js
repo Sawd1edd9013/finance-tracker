@@ -8,12 +8,13 @@ export const useEditTransaction = () => {
 
   const [transaction, setTransaction] = useState(null);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchTransaction = async () => {
       try {
         setError("");
-
+        setIsLoading(true);
         const data = await getTransactions();
         const found = data.data.find((item) => item.id === id);
 
@@ -31,6 +32,8 @@ export const useEditTransaction = () => {
         });
       } catch (e) {
         setError(e.message || "Ошибка при загрузке операции");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -76,6 +79,7 @@ export const useEditTransaction = () => {
   return {
     transaction,
     error,
+    isLoading,
     handleSubmit,
     onCancel: () => navigate("/transactions"),
   };

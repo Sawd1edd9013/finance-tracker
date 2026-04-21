@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getAccounts, updateAccount } from "../../api/accounts";
 import { useNavigate, useParams } from "react-router-dom";
-import { AccountForm } from "../../components";
+import { AccountForm, Loader } from "../../components";
 
 export const EditAccount = () => {
   const navigate = useNavigate();
@@ -9,12 +9,13 @@ export const EditAccount = () => {
 
   const [account, setAccount] = useState(null);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchAccount = async () => {
       try {
         setError("");
-
+        setIsLoading(true);
         const data = await getAccounts();
         const found = data.data.find((acc) => acc.id === id);
 
@@ -26,6 +27,8 @@ export const EditAccount = () => {
         setAccount(found);
       } catch (e) {
         setError(e.message || "Ошибка при загрузке счета");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -64,7 +67,9 @@ export const EditAccount = () => {
     <div className="px-8 pt-4 pb-8">
       {error && <div className="mb-4 text-red-600 text-sm">{error}</div>}
 
-      {account && (
+      {isLoading && <Loader />}
+
+      {!isLoading && account && (
         <AccountForm
           mode="edit"
           initialValues={account}

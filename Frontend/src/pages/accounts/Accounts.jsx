@@ -1,5 +1,5 @@
 import { PencilIcon, TrashIcon } from "../../components/icon";
-import { PageHeader, Table } from "../../components";
+import { PageHeader, Table, Loader } from "../../components";
 import { useNavigate } from "react-router-dom";
 import { ACCOUNT_TYPE_LABELS } from "../../constans/accountTypeLabels";
 import { useAccountsData } from "../hooks/useEntityListData";
@@ -7,7 +7,7 @@ import React from "react";
 
 export const Accounts = () => {
   const navigate = useNavigate();
-  const { accounts, handleDelete } = useAccountsData();
+  const { accounts, isLoading, handleDelete } = useAccountsData();
   const columns = [
     { key: "name", title: "Название", align: "left" },
     { key: "type", title: "Тип счета", align: "left" },
@@ -28,35 +28,39 @@ export const Accounts = () => {
           </button>
         </div>
 
-        <Table
-          columns={columns}
-          data={accounts}
-          rowKey={(row) => row.id}
-          renderCell={(col, row) => {
-            if (col.key === "type") {
-              return ACCOUNT_TYPE_LABELS[row.type] || row.type;
-            }
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <Table
+            columns={columns}
+            data={accounts}
+            rowKey={(row) => row.id}
+            renderCell={(col, row) => {
+              if (col.key === "type") {
+                return ACCOUNT_TYPE_LABELS[row.type] || row.type;
+              }
 
-            if (col.key !== "actions") return row[col.key];
+              if (col.key !== "actions") return row[col.key];
 
-            return (
-              <div className="flex justify-center gap-3">
-                <button
-                  onClick={() => navigate(`/accounts/${row.id}/edit`)}
-                  className="text-slate-900 hover:text-slate-800"
-                >
-                  <PencilIcon />
-                </button>
-                <button
-                  onClick={() => handleDelete(row.id)}
-                  className="text-slate-900 hover:text-red-600"
-                >
-                  <TrashIcon />
-                </button>
-              </div>
-            );
-          }}
-        />
+              return (
+                <div className="flex justify-center gap-3">
+                  <button
+                    onClick={() => navigate(`/accounts/${row.id}/edit`)}
+                    className="text-slate-900 hover:text-slate-800"
+                  >
+                    <PencilIcon />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(row.id)}
+                    className="text-slate-900 hover:text-red-600"
+                  >
+                    <TrashIcon />
+                  </button>
+                </div>
+              );
+            }}
+          />
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { PencilIcon, TrashIcon } from "../../components/icon";
-import { PageHeader, FilterPanel, Table } from "../../components";
+import { Loader, PageHeader, FilterPanel, Table } from "../../components";
 import { useNavigate } from "react-router-dom";
 import { CATEGORY_TYPE_LABELS } from "../../constans/categoryTypeLabels";
 import { useTransactionsData } from "./hooks/useTransactionsData";
@@ -15,6 +15,7 @@ export const Transactions = () => {
     accountsMap,
     categoriesMap,
     error,
+    isLoading,
     filters,
     handleFilterChange,
     handleResetFilters,
@@ -52,52 +53,56 @@ export const Transactions = () => {
 
       {error && <div className="mb-4 text-red-600 text-sm">{error}</div>}
 
-      <Table
-        columns={columns}
-        data={transactions}
-        rowKey={(row) => row.id}
-        renderCell={(col, row) => {
-          if (col.key === "date") {
-            return new Date(row.date).toLocaleDateString();
-          }
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Table
+          columns={columns}
+          data={transactions}
+          rowKey={(row) => row.id}
+          renderCell={(col, row) => {
+            if (col.key === "date") {
+              return new Date(row.date).toLocaleDateString();
+            }
 
-          if (col.key === "account") {
-            return accountsMap[row.accountId] || "—";
-          }
+            if (col.key === "account") {
+              return accountsMap[row.accountId] || "—";
+            }
 
-          if (col.key === "category") {
-            return categoriesMap[row.categoryId] || "—";
-          }
+            if (col.key === "category") {
+              return categoriesMap[row.categoryId] || "—";
+            }
 
-          if (col.key === "type") {
-            return CATEGORY_TYPE_LABELS[row.type] || row.type;
-          }
+            if (col.key === "type") {
+              return CATEGORY_TYPE_LABELS[row.type] || row.type;
+            }
 
-          if (col.key === "amount") {
-            return `${row.amount} ₽`;
-          }
+            if (col.key === "amount") {
+              return `${row.amount} ₽`;
+            }
 
-          if (col.key !== "actions") return row[col.key];
+            if (col.key !== "actions") return row[col.key];
 
-          return (
-            <div className="flex justify-center gap-3">
-              <button
-                onClick={() => navigate(`/transactions/${row.id}/edit`)}
-                className="text-slate-900 hover:text-slate-800"
-              >
-                <PencilIcon />
-              </button>
+            return (
+              <div className="flex justify-center gap-3">
+                <button
+                  onClick={() => navigate(`/transactions/${row.id}/edit`)}
+                  className="text-slate-900 hover:text-slate-800"
+                >
+                  <PencilIcon />
+                </button>
 
-              <button
-                onClick={() => handleDelete(row.id)}
-                className="text-slate-900 hover:text-red-600"
-              >
-                <TrashIcon />
-              </button>
-            </div>
-          );
-        }}
-      />
+                <button
+                  onClick={() => handleDelete(row.id)}
+                  className="text-slate-900 hover:text-red-600"
+                >
+                  <TrashIcon />
+                </button>
+              </div>
+            );
+          }}
+        />
+      )}
     </div>
   );
 };

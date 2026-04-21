@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { CategoryForm } from "../../components";
+import { CategoryForm, Loader } from "../../components";
 import { getCategories, updateCategory } from "../../api/categories";
 
 export const EditCategory = () => {
@@ -9,12 +9,13 @@ export const EditCategory = () => {
 
   const [category, setCategory] = useState(null);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchCategory = async () => {
       try {
         setError("");
-
+        setIsLoading(true);
         const data = await getCategories();
         const foundCategory = data.data.find((item) => item.id === id);
 
@@ -26,6 +27,8 @@ export const EditCategory = () => {
         setCategory(foundCategory);
       } catch (e) {
         setError(e.message || "Ошибка при загрузке категории");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -56,7 +59,9 @@ export const EditCategory = () => {
     <div className="px-8 pt-4 pb-8">
       {error && <div className="mb-4 text-red-600 text-sm">{error}</div>}
 
-      {category && (
+      {isLoading && <Loader />}
+
+      {!isLoading && category && (
         <CategoryForm
           mode="edit"
           initialValues={category}

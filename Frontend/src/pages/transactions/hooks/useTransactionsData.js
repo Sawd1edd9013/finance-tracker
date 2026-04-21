@@ -19,12 +19,13 @@ export const useTransactionsData = () => {
   const [categoriesMap, setCategoriesMap] = useState({});
   const [error, setError] = useState("");
   const [filters, setFilters] = useState(INITIAL_FILTERS);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchReferenceData = async () => {
       try {
         setError("");
-
+        setIsLoading(true);
         const accountsResponse = await getAccounts();
         const categoriesResponse = await getCategories();
 
@@ -45,6 +46,8 @@ export const useTransactionsData = () => {
         setCategoriesMap(nextCategoriesMap);
       } catch (e) {
         setError(e.message || "Ошибка загрузки данных");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -118,6 +121,7 @@ export const useTransactionsData = () => {
     accountsMap,
     categoriesMap,
     error,
+    isLoading,
     filters,
     handleFilterChange,
     handleResetFilters,
